@@ -4,31 +4,37 @@ import fetch from "isomorphic-unfetch";
 const Search = props => {
   const [search, setsearch] = useState("");
 
-  useEffect(() => {
-    searchEvent();
-  }, []);
+  // useEffect(() => {
+  //   searchEvent();
+  // }, []);
 
   const searchEvent = async e => {
     if (e != null) {
       e.preventDefault();
     }
-    const response = await fetch("http://localhost:4000", {
-      method: "POST",
-      headers: {
-        Accept: "application/json, text/plain, */*",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        search
+    if (search.trim().length == 0) {
+      console.log("Please fill in the field");
+    } else if (search.trim().length < 3) {
+      console.log("Please be more specific");
+    } else {
+      const response = await fetch("http://localhost:4000", {
+        method: "POST",
+        headers: {
+          Accept: "application/json, text/plain, */*",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          search
+        })
       })
-    })
-      .then(console.log("Post request sent succesfully"))
-      .catch(err =>
-        console.log("Error has occured in the post function: " + err)
-      );
+        .then(console.log("Post request sent succesfully"))
+        .catch(err =>
+          console.log("Error has occured in the post function: " + err)
+        );
 
-    const matches = await response.json();
-    props.parentCallback(matches);
+      // const matches = await response.json();
+      props.parentCallback(await response.json());
+    }
   };
 
   return (

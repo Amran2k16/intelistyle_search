@@ -5,21 +5,26 @@ import { useState } from "react";
 const Index = () => {
   const [searchResults, setsearchResults] = useState({});
 
-  const callbackfunction = async childData => {
-    await setsearchResults(childData);
+  const callbackfunction = childData => {
+    setsearchResults(childData);
   };
 
   return (
+    // everything above happens before render / return is called...
     <Layout>
       <div>
         <Search parentCallback={callbackfunction} />
       </div>
-      <p>{searchResults.length} results</p>
-      {searchResults.matches !== undefined
-        ? searchResults.matches.map(item, index => {
-            <p>{item.product_title}</p>;
-          })
-        : null}
+      <p>
+        {searchResults.length > 1
+          ? `There were ${searchResults.length} results`
+          : null}
+      </p>
+      {searchResults.length > 1 ? (
+        searchResults.matches.map(item => <p>{item.product_title}</p>)
+      ) : (
+        <p>There were no results matching this</p>
+      )}
     </Layout>
   );
 };
