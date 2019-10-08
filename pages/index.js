@@ -1,39 +1,110 @@
 import Layout from "../components/layout";
 import Search from "../components/search";
+import isEmpty from "../components/isempty";
 import { useState } from "react";
+import Card from "../components/card";
+import CardDisplay from "../components/card";
+import Pagination from "../components/pagination";
+// import Spinner from "../components/spinner";
 
-const Index = () => {
-  const [searchResults, setsearchResults] = useState({});
+class Index extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      searchResults: {},
+      searched: false,
+      isLoading: false,
+      postsPerPage: 50,
+      currentPage: 1
+    };
+  }
 
-  const callbackfunction = childData => {
-    setsearchResults(childData);
-  };
+  callbackfunction(childData) {
+    this.setState({ searchResults: {} });
+    this.setState({ searchResults: childData, searched: true });
+    this.setState({ currentPage: 1 });
+  }
 
-  return (
-    // everything above happens before render / return is called...
-    <Layout>
-      <div>
-        <Search parentCallback={callbackfunction} />
-      </div>
-      <p>
-        {searchResults.length > 1
-          ? `There were ${searchResults.length} results`
-          : null}
-      </p>
-      {searchResults.length > 1 ? (
-        searchResults.matches.map(item => <p>{item.product_title}</p>)
-      ) : (
-        <p>There were no results matching this</p>
-      )}
-    </Layout>
-  );
-};
+  setLoading(childData) {
+    this.setState({ isLoading: childData });
+  }
 
-// Index.getInitialProps = async function() {
-//   const res = ()
-//   const data = await res.json();
+  render() {
+    const {
+      searched,
+      searchResults,
+      isLoading,
+      currentPage,
+      postsPerPage
+    } = this.state;
 
-//   console.log(data);
-// };
+    let numberOfResults;
+
+    console.log(searchResults);
+    console.log(!isEmpty(searchResults));
+
+    if (searched && !isLoading) {
+      if (!isEmpty(searchResults)) {
+        if (searchResults.length < postsPerPage) {
+          numberOfResults = (
+            <p>
+              Displaying {Math.min(searchResults.length, postsPerPage)} of{" "}
+              {searchResults.length} results found
+            </p>
+          );
+        } else {
+          numberOfResults = (
+            // <p>
+            //   Displaying {Math.min(searchResults.length, postsPerPage)} of{" "}
+            //   {searchResults.length} results found
+            // </p>
+            <p>
+              Displaying items {currentPage * postsPerPage - postsPerPage} -{" "}
+              {currentPage * postsPerPage} of {searchResults.length} results
+              found
+            </p>
+          );
+        }
+      }
+    }
+
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    let currentPosts;
+    if (!isEmpty(searchResults)) {
+      currentPosts = searchResults.matches.slice(
+        indexOfFirstPost,
+        indexOfLastPost
+      );
+    }
+
+    // Change page
+    const paginate = pageNumber => {
+      this.setState({ currentPage: pageNumber });
+    };
+
+    return (
+      <Layout>
+        <div>
+          <Search
+            setLoading={this.setLoading.bind(this)}
+            parentCallback={this.callbackfunction.bind(this)}
+          />
+        </div>
+        <Pagination
+          postsPerPage={postsPerPage}
+          totalPosts={searchResults.length}
+          paginate={paginate}
+        />
+        {numberOfResults}
+        {/* {console.log("current posts " + currentPosts)} */}
+        <CardDisplay data={currentPosts} loading={isLoading} />
+        {/* {this.state.isLoading ? <h1>Loading!</h1> : null} */}
+
+        {/* <div className="row justify-content-between"></div> */}
+      </Layout>
+    );
+  }
+}
 
 export default Index;

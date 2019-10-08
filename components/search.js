@@ -3,20 +3,28 @@ import fetch from "isomorphic-unfetch";
 
 const Search = props => {
   const [search, setsearch] = useState("");
-
+  const [message, setmessage] = useState("");
   // useEffect(() => {
   //   searchEvent();
   // }, []);
 
-  const searchEvent = async e => {
+  const searchSubmit = async e => {
     if (e != null) {
       e.preventDefault();
     }
     if (search.trim().length == 0) {
-      console.log("Please fill in the field");
+      setmessage("Please fill in the field");
+      window.setTimeout(() => {
+        setmessage("");
+      }, 1000);
     } else if (search.trim().length < 3) {
-      console.log("Please be more specific");
+      setmessage("Please enter at least 3 characters");
+      window.setTimeout(() => {
+        setmessage("");
+      }, 1000);
     } else {
+      // show loading icon
+      props.setLoading(true);
       const response = await fetch("http://localhost:4000", {
         method: "POST",
         headers: {
@@ -32,13 +40,15 @@ const Search = props => {
           console.log("Error has occured in the post function: " + err)
         );
 
-      // const matches = await response.json();
-      props.parentCallback(await response.json());
+      const matches = await response.json();
+      props.parentCallback(matches);
+      props.setLoading(false);
+      setsearch("");
     }
   };
 
   return (
-    <form onSubmit={searchEvent} className="my-lg-0 mt-2">
+    <form onSubmit={searchSubmit} className="my-lg-0 mt-2">
       <div className="form-group row p-2">
         <input
           className="form-control mr-sm-2 col-10"
@@ -48,11 +58,12 @@ const Search = props => {
           placeholder="Search"
         />
         <button
-          className="btn btn-secondary my-2 my-sm-0 float-right"
+          className="btn btn-primary my-2 my-sm-0 float-right"
           type="submit"
         >
           Search
         </button>
+        <p style={{ color: "red" }}>{message}</p>
       </div>
     </form>
   );
