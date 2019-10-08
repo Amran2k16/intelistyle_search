@@ -7,7 +7,6 @@ const Index = () => {
 
   const callbackfunction = childData => {
     setsearchResults(childData);
-    // console.log(childData);
   };
 
   return (

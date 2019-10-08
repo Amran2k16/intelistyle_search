@@ -1,8 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import fetch from "isomorphic-unfetch";
 
 const Search = props => {
   const [search, setsearch] = useState("");
+
+  useEffect(() => {
+    searchEvent();
+  });
 
   const searchEvent = async e => {
     e.preventDefault();
