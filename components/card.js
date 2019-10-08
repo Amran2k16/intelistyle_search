@@ -3,7 +3,7 @@ import isEmpty from "./isempty";
 
 const Card = props => {
   return (
-    <div className="card col-3">
+    <div className="card col-12 col-sm-6 col-md-3">
       <div className="card-header">
         <h5>{props.title}</h5>
       </div>

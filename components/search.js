@@ -26,6 +26,7 @@ const Search = props => {
       // show loading icon
       props.setLoading(true);
       const response = await fetch("https://intelistyle-api.herokuapp.com/", {
+        // const response = await fetch("http://localhost:4000/", {
         method: "POST",
         headers: {
           Accept: "application/json, text/plain, */*",

@@ -14,7 +14,7 @@ class Index extends React.Component {
       searchResults: {},
       searched: false,
       isLoading: false,
-      postsPerPage: 50,
+      postsPerPage: 20,
       currentPage: 1
     };
   }
@@ -91,14 +91,17 @@ class Index extends React.Component {
             parentCallback={this.callbackfunction.bind(this)}
           />
         </div>
-        <Pagination
-          postsPerPage={postsPerPage}
-          totalPosts={searchResults.length}
-          paginate={paginate}
-        />
         {numberOfResults}
         {/* {console.log("current posts " + currentPosts)} */}
         <CardDisplay data={currentPosts} loading={isLoading} />
+        {!isLoading ? (
+          <Pagination
+            postsPerPage={postsPerPage}
+            totalPosts={searchResults.length}
+            paginate={paginate}
+          />
+        ) : null}
+
         {/* {this.state.isLoading ? <h1>Loading!</h1> : null} */}
 
         {/* <div className="row justify-content-between"></div> */}

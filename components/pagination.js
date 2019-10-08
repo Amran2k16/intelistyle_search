@@ -1,4 +1,5 @@
 import React from "react";
+import Router from "next/router";
 
 const Pagination = ({ postsPerPage, totalPosts, paginate }) => {
   console.log("Posts per page: " + postsPerPage);
@@ -18,7 +19,13 @@ const Pagination = ({ postsPerPage, totalPosts, paginate }) => {
       <ul className="pagination">
         {pageNumbers.map(number => (
           <li key={number} className="page-item">
-            <a onClick={e => paginate(number)} className="page-link">
+            <a
+              onClick={e => {
+                Router.push("/").then(() => window.scrollTo(0, 0));
+                paginate(number);
+              }}
+              className="page-link"
+            >
               {number}
             </a>
           </li>
