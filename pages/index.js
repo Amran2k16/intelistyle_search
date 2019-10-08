@@ -1,12 +1,12 @@
 import Layout from "../components/layout";
 import Search from "../components/search";
 import { useState } from "react";
-import { type } from "os";
+
 const Index = () => {
   const [searchResults, setsearchResults] = useState({});
 
-  const callbackfunction = childData => {
-    setsearchResults(childData);
+  const callbackfunction = async childData => {
+    await setsearchResults(childData);
   };
 
   return (
@@ -14,11 +14,12 @@ const Index = () => {
       <div>
         <Search parentCallback={callbackfunction} />
       </div>
-      {console.log(searchResults)}
-
-      {/* {searchResults.matches.map(item => {
-        return <p>{item.brand}</p>;
-      })} */}
+      <p>{searchResults.length} results</p>
+      {searchResults.matches !== undefined
+        ? searchResults.matches.map(item, index => {
+            <p>{item.product_title}</p>;
+          })
+        : null}
     </Layout>
   );
 };

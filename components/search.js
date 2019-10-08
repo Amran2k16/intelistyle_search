@@ -6,10 +6,12 @@ const Search = props => {
 
   useEffect(() => {
     searchEvent();
-  });
+  }, []);
 
   const searchEvent = async e => {
-    e.preventDefault();
+    if (e != null) {
+      e.preventDefault();
+    }
     const response = await fetch("http://localhost:4000", {
       method: "POST",
       headers: {
